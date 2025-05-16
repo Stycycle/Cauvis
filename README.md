@@ -17,21 +17,27 @@
 | Cauvis | EVA02-L  |   69.7    |   50.2    |    57.6    |    34.2     |    48.1     | 52.0 |  [log](resources/sdgod/Cauvis_EVA02.log) |
 
 
-### Object Detection Performance for Cityscpaes-C:
+### Corruption Detection Performance for Cityscpaes-C:
 
-| Model  |  Detector  | Guass | Shot | Impul | Defocus | Glass | Motion | Zoom | Snow | Frost | Foggy | Bright | Contrast | Elas | Pixel | JPEGImages |   mPC   |                     Log                      |
-|:------:|:----------:|:-----:|:----:|:-----:|:-------:|:-----:|:------:|:----:|:----:|:-----:|:------:|:-----:|:--------:|:-----:|:-----:|:----------:|:-------:|  :-------------: |
-| Cauvis | FasterRCNN | 16.8  | 19.8 | 15.2  |  41.4   | 34.0  |  39.2  | 15.8 | 29.8 | 36.7  |  48.8  |   53.0   | 49.5 | 52.0  |    43.9    |    38.8    |    35.6    | [log](resources/cityscapes/Cauvis_cityscapes.log) |
+| Model  |  Detector  | Guass | Shot | Impul | Defocus | Glass | Motion | Zoom | Snow | Frost | Foggy | Bright | Contrast | Elas |  Pixel   | JPEGImages |    mPC    |                        Log                        |
+|:------:|:----------:|:-----:|:----:|:-----:|:-------:|:-----:|:------:|:----:|:----:|:-----:|:------:|:-----:|:--------:|:----:|:--------:|:----------:|:---------:|:-------------------------------------------------:|
+| Cauvis | FasterRCNN | 16.8  | 19.8 | 15.2  |  41.4   | 34.0  |  39.2  | 15.8 | 29.8 | 36.7  |  48.8  |   53.0   | 49.5 | 52.0 |    43.9  |    38.8    |    35.6   | [log](resources/cityscapes/Cauvis_cityscapes.log) |
 
+
+### Corruption Detection Performance for BDD100k-C:
+
+| Model  |  Detector  | Guass | Shot | Impul | Defocus | Glass | Motion | Zoom | Snow | Frost | Foggy | Bright | Contrast | Elas | Pixel | JPEGImages | mPC  |                       Log                        |
+|:------:|:----------:|:-----:|:----:|:-----:|:-------:|:-----:|:------:|:----:|:----:|:-----:|:-----:|:------:|:--------:|:----:|:-----:|:----------:|:----:|:------------------------------------------------:|
+| Cauvis | FasterRCNN | 34.4  | 36.5 | 33.3  |  44.3   | 41.1  |  43.1  | 21.6 | 41.1 | 42.3  | 54.8  |  53.9  |   54.0   | 51.2 | 51.3  |    50.4    | 43.6 | [log](resources/bdd100k_c/cauvis_fasterrcnn.log) |
 
 # Validating performance on SDGOD
 
-## Train Cauvis on 
+**Train**
 ```shell
 bash tools/dist_train.sh configs/dinov2/cauvis_dinov2_dinohead_bs1x4_sdgod.py 8 --work-dir ./work_dir/cauvis --find_unused_parameters
 ```
 
-## Test Cauvis on SDGOD
+**Test**
 ```shell
 bash dist_test.sh configs/dinov2/cauvis_dinov2_dinohead_bs1x4_sdgod.py path/to/your.pth 8 --work-dir ./work_dir
 ```
