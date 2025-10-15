@@ -2,14 +2,18 @@
 **Towards Single-Source Domain Generalized Object Detection via Causal Visual Prompts**
 
 <div align="center">
-    Chen Li, Huiying Xu, Changxin Gao, Zeyu Wang, Yun Liu, Xinzhong Zhu
+    Chen Li, Huiying Xu, Changxin Gao <sup>*</sup>, Zeyu Wang, Yun Liu, Xinzhong Zhu
+    <sup>1</sup> Huazhong University of Science and Technology, 
+    <br>
+    * Corresponding Author.
+    <br>
 </div>
 
 <div align="center">
     <img src="assets/overview_of_cauvis.png">
 </div>
 
-> **TL;DR**: Cauvis suppresses spurious correlations using cross-prompts modules plus a dual-branch adapters (capturing high-frequency, domain-invariant features), yielding significant gains on single-source domain generalized object detection benchmarks such as Cityscapes-C and BDD100K-C.
+> **TL;DR**: Cauvis (Causal Visual Prompts) tackles single-source domain generalized object detection by combining cross-attention visual prompts with a dual-branch adapter. The prompts suppress spurious correlation, while the adapter disentangles causal vs. non-causal features and adapts via high-frequency (Fourier) extraction, delivering state-of-the-art gains on SDGOD benchmark and Cityscapes-C.
 
 
 ---
@@ -22,13 +26,21 @@
 
 ## Table of Contents
 - [Installation](##installation)
-- [Data Preparation](##Data Preparation)
-- [Pretrained Weights](##Pretrained Weights)
-- [Results](##Main results)
+- [Data Preparation](##Data_Preparation)
+- [Pretrained Weights](##Pretrained_Weights)
+- [Results](##Results)
 - [Train / Eval](##Train-eval)
 
 ## Installation
-
+### Pretrained DINOv2 
+Our DINOv2 weights here are primarily derived from [Rein](https://github.com/w1oves/Rein) repository
+* **Download:** Download pre-trained weights from [facebookresearch](https://dl.fbaipublicfiles.com/dinov2/dinov2_vitl14/dinov2_vitl14_pretrain.pth) .
+* **Convert** 
+  ```bash
+  python tools/convert_models/convert_dinov2.py checkpoints/dinov2_vitl14_pretrain.pth checkpoints/dinov2_converted_1024x1024.pth --height 1024 --width 1024
+  ```
+  
+### environment
 ```bash
 pip3 install torch==2.2.0 torchvision==0.17.0 --index-url https://download.pytorch.org/whl/cu118
 pip install -r ./requirements.txt &&
@@ -44,8 +56,8 @@ pip install -v -e .
 pip install numpy==1.26.0
 ```
 
-## Data Preparation
-Download the SDGOD dataset and organize it in `dataset` folder as follows:
+## Data_Preparation
+Download the [SDGOD]((https://github.com/AmingWu/Single-DGOD)) dataset and organize it in `dataset` folder as follows:
 ```
 |-- Single-DGOD/
 |   |-- Daytime_Sunny/
@@ -66,10 +78,10 @@ Download the SDGOD dataset and organize it in `dataset` folder as follows:
 |   |-- Night-Sunny/
 ```
 
-## Pretrained Weights
+## Pretrained_Weights
 Comming soon
 
-## Main results
+## Results
 
 ### Performance on SDGOD:
 
@@ -120,3 +132,7 @@ bash tools/dist_test_robustness.sh configs/cityscapes/cauvis_bs2x4_cityscapes.py
 # next step
 python tools/analysis_tools/test_robustness.py configs/cityscapes/cauvis_bs2x4_cityscapes.py path/to/your.pth --out /path/to/xxx.pkl --work-dir ./work_dir --corruptions benchmark 
 ```
+
+
+## Acknowledgment
+Our implementation is mainly based on [MMdetection](https://github.com/open-mmlab/mmsegmentation) and [Rein](https://github.com/w1oves/Rein). Thanks for their authors.
