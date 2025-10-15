@@ -1,4 +1,73 @@
-# Towards Single-Domain Generalized Object Detection via Causal Visual Prompts
+# Cauvis
+**Towards Single-Source Domain Generalized Object Detection via Causal Visual Prompts**
+
+<div align="center">
+    Chen Li, Huiying Xu, Changxin Gao, Zeyu Wang, Yun Liu, Xinzhong Zhu
+</div>
+
+<div align="center">
+    <img src="assets/overview_of_cauvis.png">
+</div>
+
+> **TL;DR**: Cauvis suppresses spurious correlations using cross-prompts modules plus a dual-branch adapters (capturing high-frequency, domain-invariant features), yielding significant gains on single-source domain generalized object detection benchmarks such as Cityscapes-C and BDD100K-C.
+
+
+---
+
+## News
+- **2025-10-15**: Code released; training logs for Cityscapes-C / BDD100K-C are now available.
+- **2025-09-18**: Paper accepted to NeurIPS 2025 🎉
+
+---
+
+## Table of Contents
+- [Installation](##installation)
+- [Data Preparation](##Data Preparation)
+- [Pretrained Weights](##Pretrained Weights)
+- [Results](##Main results)
+- [Train / Eval](##Train-eval)
+
+## Installation
+
+```bash
+pip3 install torch==2.2.0 torchvision==0.17.0 --index-url https://download.pytorch.org/whl/cu118
+pip install -r ./requirements.txt &&
+pip install albumentations==1.4.4 timm einops &&
+pip install -U openmim &&
+mim install mmengine &&
+mim install mmcv==2.2.0 &&
+#git clone https://github.com/open-mmlab/mmcv.git
+#cd mmcv && pip install -r requirements/optional.txt && pip install -e . -v
+pip install xformers==0.0.24 # torch 2.2
+#pip install PyWavelets
+pip install -v -e .
+pip install numpy==1.26.0
+```
+
+## Data Preparation
+Download the SDGOD dataset and organize it in `dataset` folder as follows:
+```
+|-- Single-DGOD/
+|   |-- Daytime_Sunny/
+|   |   |-- daytime_clear/
+|   |       |-- VOC2007
+|   |           |-- Annotations
+|   |               |-- 0a0a0b1a-7c39d841.xml
+|   |               |-- ...xml
+|   |           |-- ImageSets
+|   |               |-- Main
+|   |                   |-- train.txt
+|   |                   |-- ...txt
+|   |           |-- JPEGImages
+|   |               |-- 0a0a0b1a-7c39d841.jpg
+|   |-- DaytimeFoggy/
+|   |-- Dusk-rainy/
+|   |-- Night_rainy/
+|   |-- Night-Sunny/
+```
+
+## Pretrained Weights
+Comming soon
 
 ## Main results
 
@@ -30,28 +99,24 @@
 |:------:|:----------:|:-----:|:----:|:-----:|:-------:|:-----:|:------:|:----:|:----:|:-----:|:-----:|:------:|:--------:|:----:|:-----:|:----------:|:----:|:------------------------------------------------:|
 | Cauvis | FasterRCNN | 34.4  | 36.5 | 33.3  |  44.3   | 41.1  |  43.1  | 21.6 | 41.1 | 42.3  | 54.8  |  53.9  |   54.0   | 51.2 | 51.3  |    50.4    | 43.6 | [log](resources/bdd100k_c/cauvis_fasterrcnn.log) |
 
-# Validating performance on SDGOD
+## Train-eval
 
-**Train**
+**Train on SDGOD**
 ```shell
+# train
 bash tools/dist_train.sh configs/dinov2/cauvis_dinov2_dinohead_bs1x4_sdgod.py 8 --work-dir ./work_dir/cauvis --find_unused_parameters
-```
-
-**Test**
-```shell
+# test
 bash dist_test.sh configs/dinov2/cauvis_dinov2_dinohead_bs1x4_sdgod.py path/to/your.pth 8 --work-dir ./work_dir
 ```
 
-# Validating Performance on Cityscapes-C
-Train on Source Domain (Cityscapes)
-```shell
-bash tools/dist_train.sh configs/cityscapes/cauvis_bs2x4_cityscapes.py 8 --amp --work-dir ./work_dir/cauvis --find_unused_parameters
-```
-Test on Target Domain
-```shell
-bash tools/dist_test_robustness.sh configs/cityscapes/cauvis_bs2x4_cityscapes.py path/to/your/epoch_12.pth 8 --out path/to/your/xxx.pkl --work-dir ./work_dir --corruptions benchmark
-```
+**Validating Performance on Cityscapes-C**
 
 ```shell
+# Train on Source Domain (Cityscapes)
+bash tools/dist_train.sh configs/cityscapes/cauvis_bs2x4_cityscapes.py 8 --amp --work-dir ./work_dir/cauvis --find_unused_parameters
+
+# test on Target Domain
+bash tools/dist_test_robustness.sh configs/cityscapes/cauvis_bs2x4_cityscapes.py path/to/your/epoch_12.pth 8 --out path/to/your/xxx.pkl --work-dir ./work_dir --corruptions benchmark
+# next step
 python tools/analysis_tools/test_robustness.py configs/cityscapes/cauvis_bs2x4_cityscapes.py path/to/your.pth --out /path/to/xxx.pkl --work-dir ./work_dir --corruptions benchmark 
 ```
