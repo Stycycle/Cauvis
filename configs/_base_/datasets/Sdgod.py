@@ -1,6 +1,6 @@
 # dataset settings
 dataset_type = 'SdgodDataset'
-data_root = '/home/stycycle/workspace/Cauvis/wufan___S-DGOD/'
+data_root = '/root/autodl-tmp/Cauvis/wufan___S-DGOD/'
 
 backend_args = None
 
